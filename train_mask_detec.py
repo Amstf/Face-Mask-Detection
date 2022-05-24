@@ -26,7 +26,7 @@ INIT_LR = 1e-4
 EPOCHS = 20
 BS = 32
 
-DIRECTORY = r"FaceMask\dataset"
+DIRECTORY = r"C:\Mask Detection\CODE\Face-Mask-Detection-master\dataset"
 CATEGORIES = ["with_mask", "without_mask"]
 
 # grab the list of images in our dataset directory, then initialize
@@ -134,4 +134,4 @@ plt.title("Training Loss and Accuracy")
 plt.xlabel("Epoch #")
 plt.ylabel("Loss/Accuracy")
 plt.legend(loc="lower left")
-plt.savefig("TrainingGraph.png")
+plt.savefig("plot.png")
