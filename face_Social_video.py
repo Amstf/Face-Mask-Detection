@@ -10,16 +10,6 @@ import cv2
 cv2.startWindowThread()
 
 threshold = 320
-# output formatting
-# cap = cv2.VideoCapture('vid4.mp4')
-# output_filename = 'vid100Detect.mp4'
-# output_frames_per_second = cap.get(cv2.CAP_PROP_FPS)
-# # the output will be written to output.avi
-# result = cv2.VideoWriter(
-#     'vid100Detect.mp4',
-#     cv2.VideoWriter_fourcc(*'mp4v'),
-#     15.,
-#     (640,480))
 path="1.jpeg"
 frame = cv2.imread(path)
 def detect_and_predict_mask(frame, faceNet, maskNet):
@@ -36,8 +26,7 @@ def detect_and_predict_mask(frame, faceNet, maskNet):
 	
     centers = []
 
-	# loop over the detections
-	
+   # loop over the detections
     for i in range(0, detections.shape[2]):
         confidence = detections[0, 0, i, 2]
         if confidence > 0.5:
@@ -47,26 +36,13 @@ def detect_and_predict_mask(frame, faceNet, maskNet):
             (endX, endY) = (min(w - 1, endX), min(h - 1, endY))
             face = frame[startY:endY, startX:endX]
             cv2.circle(frame,(getCenter(startX, startY, endX, endY)), 4, (135,206,235), -1)
-			
             face = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
-			
             face = cv2.resize(face, (224, 224))
-			# [(left+right)//2, (top+bottom)//2]
-
-			
-			
             face = img_to_array(face)
-			
             face = preprocess_input(face)
-
-			# add the face and bounding boxes to their respective
-			# lists
-			
-            centers.append(getCenter(startX, startY, endX, endY))
-			
-			
-            faces.append(face)
-			
+	    # add the face and bounding boxes to their respective	
+            centers.append(getCenter(startX, startY, endX, endY))	
+            faces.append(face)	
             locs.append((startX, startY, endX, endY))
 
 	
@@ -81,27 +57,12 @@ faceNet = cv2.dnn.readNet(prototxtPath, weightsPath)
 
 # load the face mask detector model from disk
 maskNet = load_model("mask_detector.model")
-
-# initialize the video stream
-
-
-
-
 #function that return the Center of an object
 def getCenter(startX, startY, endX, endY):
-	
     return [(startX+endX)//2, (startY+endY)//2]
 
 # loop over the frames from the video stream
 print("[INFO] Reading video stream...")
-# while cap.isOpened():
-# 	# grab the frame from the threaded video stream and resize it
-# 	# to have a maximum width of 400 pixels
-#     ret, frame = cap.read()
-#     # frame = imutils.resize(frame, width=400)
-#     if ret:
-        # detect faces in the frame and determine if they are wearing a
-        # face mask or not
 (locs, preds),centers = detect_and_predict_mask(frame, faceNet, maskNet)
         # distances_list
 distances_list = np.empty((len(centers), len(centers)))
@@ -114,13 +75,6 @@ for i in range(len(centers)):
                 distances_list[i,j] = np.inf
             else:  
                 distances_list[i,j] = distance
-
-				
-		
-
-
-
-
         for (box, pred) in zip(locs, preds):
             # unpack the bounding box and predictions
             (startX, startY, endX, endY) = box
@@ -131,9 +85,6 @@ for i in range(len(centers)):
                 if min_distances[face]<threshold:
                     text= "warning"
                     cv2.putText(frame, text, (endX, endY - 10),cv2.FONT_HERSHEY_SIMPLEX, 0.45, color, 2)
-                    
-                    
-
 
             # # determine the class label and color we'll use to draw
             # # the bounding box and text
